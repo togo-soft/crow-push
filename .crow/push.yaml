@@ -1,0 +1,23 @@
+when:
+  - event: [push, pull_request, tag]
+
+clone:
+  git:
+    image: codeberg.org/crow-plugins/clone:1.0.3
+    settings:
+      tags: true
+
+steps:
+  push:
+    image: codefloe.com/actions/push:v0.0.1
+    settings:
+      access_token:
+        from_secret: codefloe_packages_token
+      platforms:
+        - name: codeberg
+          enabled: true
+          organization: openhub
+          repository: push
+          url: ssh://git@codeberg.org/openhub/push.git
+          token: b8d8e09f6c21abf24d0c39bce66aba90b8eb8a18
+          remote_name: codeberg
