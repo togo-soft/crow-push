@@ -3,7 +3,7 @@ module codefloe.com/actions/push
 go 1.26
 
 require (
-	codefloe.com/actions/common v0.0.0-20260225131020-6f794cd8ba54
+	codefloe.com/actions/common v0.0.0-20260227135546-c80c14727e49
 	github.com/go-git/go-git/v5 v5.17.0
 	golang.org/x/crypto v0.48.0
 )
@@ -25,10 +25,7 @@ require (
 	github.com/sergi/go-diff v1.4.0 // indirect
 	github.com/skeema/knownhosts v1.3.2 // indirect
 	github.com/xanzy/ssh-agent v0.3.3 // indirect
-	golang.org/x/mod v0.17.0 // indirect
 	golang.org/x/net v0.50.0 // indirect
-	golang.org/x/sync v0.10.0 // indirect
 	golang.org/x/sys v0.41.0 // indirect
-	golang.org/x/tools v0.21.1-0.20240508182429-e35e4ccd0d2d // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 )

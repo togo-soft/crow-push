@@ -23,9 +23,8 @@ type Platform struct {
 
 type Config struct {
 	common.Environment
-	AccessToken  string      `env:"PLUGIN_ACCESS_TOKEN" json:"PLUGIN_ACCESS_TOKEN"` // person access token
-	EnvPlatforms string      `env:"PLUGIN_PLATFORMS" json:"-"`                      // platform list, string can convert to Platform slice
-	Platforms    []*Platform `json:"PLUGIN_PLATFORMS,omitempty"`                    // convert from EnvPlatforms
+	AccessToken string      `env:"PLUGIN_ACCESS_TOKEN" json:"PLUGIN_ACCESS_TOKEN"` // person access token
+	Platforms   []*Platform `env:"PLUGIN_PLATFORMS" json:"PLUGIN_PLATFORMS"`       // platform list
 }
 
 func (c Config) String() string {
@@ -47,12 +46,6 @@ func (c Config) String() string {
 }
 
 func (c *Config) Validate() error {
-	if c.EnvPlatforms == "" {
-		return fmt.Errorf("PLUGIN_PLATFORMS is required")
-	}
-	if err := json.Unmarshal([]byte(c.EnvPlatforms), &c.Platforms); err != nil {
-		return fmt.Errorf("parse PLUGIN_PLATFORMS: %w", err)
-	}
 	if len(c.Platforms) == 0 {
 		return fmt.Errorf("PLUGIN_PLATFORMS must contain at least one platform")
 	}
