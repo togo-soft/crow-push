@@ -9,7 +9,7 @@ clone:
 
 steps:
   push:
-    image: codefloe.com/actions/push:v0.0.2
+    image: codefloe.com/actions/push:v0.0.3
     settings:
       access_token:
         from_secret: codefloe_packages_token
