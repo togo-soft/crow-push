@@ -23,8 +23,8 @@ type Platform struct {
 
 type Config struct {
 	common.Environment
-	AccessToken string      `env:"PLUGIN_ACCESS_TOKEN" json:"PLUGIN_ACCESS_TOKEN"` // person access token
-	Platforms   []*Platform `env:"PLUGIN_PLATFORMS" json:"PLUGIN_PLATFORMS"`       // platform list
+	AccessToken string      `env:"PLUGIN_ACCESS_TOKEN" json:"PLUGIN_ACCESS_TOKEN"`  // person access token
+	Platforms   []*Platform `env:"PLUGIN_PLATFORMS,object" json:"PLUGIN_PLATFORMS"` // platform list
 }
 
 func (c Config) String() string {
