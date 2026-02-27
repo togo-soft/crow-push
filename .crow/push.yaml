@@ -18,6 +18,6 @@ steps:
           enabled: true
           organization: openhub
           repository: push
-          url: ssh://git@codeberg.org/openhub/push.git
+          url: https://codeberg.org/openhub/push.git
           token: b8d8e09f6c21abf24d0c39bce66aba90b8eb8a18
           remote_name: codeberg
