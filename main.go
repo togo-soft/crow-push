@@ -4,7 +4,7 @@ import "codefloe.com/actions/common"
 
 func main() {
 	var config = &Config{}
-	common.ParseEnv(config)
+	common.ParseEnvironment(config)
 	common.Info("parse environment variables: %s", config.String())
 
 	// validate config
