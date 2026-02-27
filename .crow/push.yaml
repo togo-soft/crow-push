@@ -19,5 +19,6 @@ steps:
           organization: openhub
           repository: push
           url: https://codeberg.org/openhub/push.git
+          username: xuthus5
           token: b8d8e09f6c21abf24d0c39bce66aba90b8eb8a18
           remote_name: codeberg

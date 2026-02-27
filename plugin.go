@@ -28,7 +28,7 @@ func Run(cfg *Config) error {
 
 		common.Info("pushing to platform: %s (%s)", platform.Name, platform.URL)
 		if err := pushToPlatform(repo, platform); err != nil {
-			common.Info("failed to push to %s: %v", platform.Name, err)
+			common.Error("failed to push to %s: %v", platform.Name, err)
 			errors = append(errors, fmt.Errorf("%s: %w", platform.Name, err))
 		} else {
 			common.Info("successfully pushed to platform: %s", platform.Name)
@@ -92,9 +92,9 @@ func pushToPlatform(repo *git.Repository, platform *Platform) error {
 
 // buildAuth returns the appropriate authentication method for a platform
 func buildAuth(platform *Platform) (transport.AuthMethod, error) {
-	if platform.Token != "" {
+	if platform.Username != "" && platform.Token != "" {
 		return &http.BasicAuth{
-			Username: "x-token-auth",
+			Username: platform.Username,
 			Password: platform.Token,
 		}, nil
 	}
