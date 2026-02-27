@@ -1,8 +1,24 @@
 package main
 
-import "codefloe.com/actions/common"
+import (
+	"os"
+	"strings"
+
+	"codefloe.com/actions/common"
+)
 
 func main() {
+	envs := os.Environ()
+
+	for _, env := range envs {
+		// 分割 key 和 value
+		pair := strings.SplitN(env, "=", 2)
+		if len(pair) == 2 {
+			common.Info("%s=%s\n", pair[0], pair[1])
+		}
+	}
+	common.Info("============================")
+
 	var config = &Config{}
 	common.ParseEnvironment(config)
 	common.Info("parse environment variables: %s", config.String())
