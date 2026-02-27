@@ -92,6 +92,15 @@ func pushToPlatform(repo *git.Repository, platform *Platform) error {
 
 // buildAuth returns the appropriate authentication method for a platform
 func buildAuth(platform *Platform) (transport.AuthMethod, error) {
+	if platform.SSHKey != "" {
+		publicKeys, err := ssh.NewPublicKeys("git", []byte(platform.SSHKey), platform.SSHKeyPassphrase)
+		if err != nil {
+			return nil, fmt.Errorf("parse ssh key: %w", err)
+		}
+
+		return &insecureSSHAuth{PublicKeys: publicKeys}, nil
+	}
+
 	if platform.Username != "" && platform.Token != "" {
 		return &http.BasicAuth{
 			Username: platform.Username,
@@ -104,15 +113,6 @@ func buildAuth(platform *Platform) (transport.AuthMethod, error) {
 			Username: platform.Username,
 			Password: platform.Password,
 		}, nil
-	}
-
-	if platform.SSHKey != "" {
-		publicKeys, err := ssh.NewPublicKeys("git", []byte(platform.SSHKey), platform.SSHKeyPassphrase)
-		if err != nil {
-			return nil, fmt.Errorf("parse ssh key: %w", err)
-		}
-
-		return &insecureSSHAuth{PublicKeys: publicKeys}, nil
 	}
 
 	return nil, fmt.Errorf("no auth method available")

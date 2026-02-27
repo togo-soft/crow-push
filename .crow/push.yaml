@@ -13,12 +13,17 @@ steps:
     settings:
       access_token:
         from_secret: codefloe_packages_token
+      ssh_key:
+        from_secret: ssh_key
+      ssh_key_passphrase:
+        from_secret: ssh_key_passphrase
       platforms:
         - name: codeberg
           enabled: true
           organization: openhub
           repository: push
           url: https://codeberg.org/openhub/push.git
-          username: git
+          ssh_key: ${PLUGIN_SSH_KEY}
+          ssh_key_passphrase: ${PLUGIN_SSH_PASSPHRASE}
           token: b8d8e09f6c21abf24d0c39bce66aba90b8eb8a18
           remote_name: codeberg
