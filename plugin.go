@@ -28,7 +28,7 @@ func Run(cfg *Config) error {
 
 		common.Info("pushing to platform: %s (%s)", platform.Name, platform.URL)
 		if err := pushToPlatform(repo, platform); err != nil {
-			common.Info("failed to push to %s: %v", platform.Name, err)
+			common.Error("failed to push to %s: %v", platform.Name, err)
 			errors = append(errors, fmt.Errorf("%s: %w", platform.Name, err))
 		} else {
 			common.Info("successfully pushed to platform: %s", platform.Name)
@@ -77,9 +77,11 @@ func pushToPlatform(repo *git.Repository, platform *Platform) error {
 	}
 
 	err = repo.Push(&git.PushOptions{
-		RemoteName: remoteName,
-		RefSpecs:   refSpecs,
-		Auth:       auth,
+		RemoteName:      remoteName,
+		RefSpecs:        refSpecs,
+		Auth:            auth,
+		Force:           true,
+		InsecureSkipTLS: true,
 	})
 
 	// NoErrAlreadyUpToDate is success
@@ -92,9 +94,21 @@ func pushToPlatform(repo *git.Repository, platform *Platform) error {
 
 // buildAuth returns the appropriate authentication method for a platform
 func buildAuth(platform *Platform) (transport.AuthMethod, error) {
-	if platform.Token != "" {
+	if platform.SSHKey != "" {
+		publicKeys, err := ssh.NewPublicKeys("git", []byte(platform.SSHKey), platform.SSHKeyPassphrase)
+		if err != nil {
+			return nil, fmt.Errorf("parse ssh key: %w", err)
+		}
+
+		// Set HostKeyCallback to InsecureIgnoreHostKey to disable host key verification in CI environments
+		publicKeys.HostKeyCallback = gossh.InsecureIgnoreHostKey()
+
+		return publicKeys, nil
+	}
+
+	if platform.Username != "" && platform.Token != "" {
 		return &http.BasicAuth{
-			Username: "x-token-auth",
+			Username: platform.Username,
 			Password: platform.Token,
 		}, nil
 	}
@@ -106,15 +120,6 @@ func buildAuth(platform *Platform) (transport.AuthMethod, error) {
 		}, nil
 	}
 
-	if platform.SSHKey != "" {
-		publicKeys, err := ssh.NewPublicKeys("git", []byte(platform.SSHKey), platform.SSHKeyPassphrase)
-		if err != nil {
-			return nil, fmt.Errorf("parse ssh key: %w", err)
-		}
-
-		return &insecureSSHAuth{PublicKeys: publicKeys}, nil
-	}
-
 	return nil, fmt.Errorf("no auth method available")
 }
 
@@ -124,20 +129,4 @@ func remoteName(platform *Platform) string {
 		return platform.RemoteName
 	}
 	return "push-plugin-" + platform.Name
-}
-
-// insecureSSHAuth wraps ssh.PublicKeys and disables host key verification for CI environments
-type insecureSSHAuth struct {
-	*ssh.PublicKeys
-}
-
-// ClientConfig returns a custom SSH config with disabled host key verification
-func (a *insecureSSHAuth) ClientConfig() (*gossh.ClientConfig, error) {
-	config, err := a.PublicKeys.ClientConfig()
-	if err != nil {
-		return nil, err
-	}
-
-	config.HostKeyCallback = gossh.InsecureIgnoreHostKey()
-	return config, nil
 }

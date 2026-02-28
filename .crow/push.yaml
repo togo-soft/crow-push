@@ -1,0 +1,35 @@
+variables:
+  platforms: &platforms
+    - name: codeberg
+      enabled: true
+      organization: openhub
+      repository: push
+      url: ssh://git@codeberg.org/openhub/push.git
+      ssh_key:
+        from_secret: ssh_key
+      remote_name: codeberg
+
+when:
+  - event: [ push, pull_request, tag ]
+
+clone:
+  git:
+    image: codeberg.org/crow-plugins/clone:1.0.3
+    settings:
+      tags: true
+
+steps:
+  push-test:
+    image: golang:1.26
+    environment:
+      GOOS: linux
+      GOARCH: amd64
+      CGO_ENABLED: 0
+      SSH_KNOWN_HOSTS: ""
+      PLUGIN_PLATFORMS: *platforms
+      PLUGIN_ACCESS_TOKEN:
+        from_secret: codefloe_packages_token
+    commands:
+      - mkdir -p build
+      - go mod tidy && go build -o build/push .
+      - chmod +x build/push && build/push
