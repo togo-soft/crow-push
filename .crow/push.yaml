@@ -14,7 +14,7 @@ variables:
       repository: crow-push
       url: git@github.com:togo-soft/crow-push.git
       ssh_key:
-        from_secret: github_ssh_key
+        from_secret: ssh_key
       remote_name: github
 
 
