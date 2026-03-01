@@ -5,6 +5,7 @@ go 1.26
 require (
 	codefloe.com/actions/common v0.0.0-20260227135546-c80c14727e49
 	github.com/go-git/go-git/v5 v5.17.0
+	github.com/tidwall/pretty v1.2.1
 	golang.org/x/crypto v0.48.0
 )
 

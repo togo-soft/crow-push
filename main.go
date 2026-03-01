@@ -7,7 +7,7 @@ import (
 func main() {
 	var config = &Config{}
 	common.ParseEnvironment(config)
-	common.Info("parse environment variables: %s", config.String())
+	common.Info("🪲 parse environment variables: \n%s\n==========", config.String())
 
 	// validate config
 	if err := config.Validate(); err != nil {
@@ -18,5 +18,5 @@ func main() {
 	if err := Run(config); err != nil {
 		common.Fatal("push failed: %v", err)
 	}
-	common.Info("all platforms synced successfully")
+	common.Info("❤️ all platforms synced successfully")
 }
