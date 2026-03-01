@@ -8,28 +8,18 @@ import (
 	"github.com/tidwall/pretty"
 )
 
-const (
-	PlatformGithub   = "github"
-	PlatformGitlab   = "gitlab"
-	PlatformGitea    = "gitea"
-	PlatformCodeberg = "codeberg"
-	PlatformCodefloe = "codefloe"
-)
-
 type Platform struct {
-	Name                 string `json:"name"`               // platform name
-	Enabled              bool   `json:"enabled"`            // enable push to platform
-	Organization         string `json:"organization"`       // set organization if you want to create repository
-	Repository           string `json:"repository"`         // set repository name if you want to create repository
-	URL                  string `json:"url"`                // git repository url
-	Username             string `json:"username"`           // platform username
-	Password             string `json:"password"`           // platform password
-	Token                string `json:"token"`              // platform token
-	SSHKey               string `json:"ssh_key"`            // git ssh key
-	SSHKeyPassphrase     string `json:"ssh_key_passphrase"` // git ssh key passphrase
-	RemoteName           string `json:"remote_name"`        // custom remote name
-	Type                 string `json:"type"`               // git platform type, gitea/github can auto create repository
-	AutoCreateRepository bool   `json:"auto_create"`        // auto create repository if repo not exist
+	Name             string `json:"name"`               // platform name
+	Enabled          bool   `json:"enabled"`            // enable push to platform
+	Organization     string `json:"organization"`       // set organization if you want to create repository
+	Repository       string `json:"repository"`         // set repository name if you want to create repository
+	URL              string `json:"url"`                // git repository url
+	Username         string `json:"username"`           // platform username
+	Password         string `json:"password"`           // platform password
+	Token            string `json:"token"`              // platform token
+	SSHKey           string `json:"ssh_key"`            // git ssh key
+	SSHKeyPassphrase string `json:"ssh_key_passphrase"` // git ssh key passphrase
+	RemoteName       string `json:"remote_name"`        // custom remote name
 }
 
 type Config struct {

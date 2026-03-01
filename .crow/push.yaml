@@ -8,6 +8,15 @@ variables:
       ssh_key:
         from_secret: ssh_key
       remote_name: codeberg
+    - name: github
+      enabled: true
+      organization: togo-soft
+      repository: crow-push
+      url: git@github.com:togo-soft/crow-push.git
+      ssh_key:
+        from_secret: github_ssh_key
+      remote_name: github
+
 
 when:
   - event: [ push, pull_request, tag ]
@@ -19,7 +28,7 @@ clone:
       tags: true
 
 steps:
-  push-test:
+  push:
     image: golang:1.26
     environment:
       GOOS: linux
