@@ -1,7 +1,7 @@
 FROM golang:1.26-alpine AS builder
 WORKDIR /app
 COPY . .
-RUN go mod tidy && CGO_ENABLED=0 go build -o /plugin
+RUN go mod tidy && CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /plugin
 
 FROM alpine:latest
 WORKDIR /app
