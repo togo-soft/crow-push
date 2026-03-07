@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"codefloe.com/actions/common"
+	"codefloe.com/actions/push/client"
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/config"
 	"github.com/go-git/go-git/v5/plumbing/transport"
@@ -27,6 +28,13 @@ func Run(cfg *Config) error {
 		}
 
 		common.Info("pushing to platform: %s (%s)", platform.Name, platform.URL)
+
+		if platform.AutoCreateRepository {
+			if err := createRepositoryToPlatform(platform); err != nil {
+				common.Error("create repository to %s failed: %s", platform.Name, err)
+			}
+		}
+
 		if err := pushToPlatform(repo, platform); err != nil {
 			common.Error("failed to push to %s: %v", platform.Name, err)
 			errors = append(errors, fmt.Errorf("%s: %w", platform.Name, err))
@@ -95,7 +103,11 @@ func pushToPlatform(repo *git.Repository, platform *Platform) error {
 // buildAuth returns the appropriate authentication method for a platform
 func buildAuth(platform *Platform) (transport.AuthMethod, error) {
 	if platform.SSHKey != "" {
-		publicKeys, err := ssh.NewPublicKeys("git", []byte(platform.SSHKey), platform.SSHKeyPassphrase)
+		username := platform.SSHUser
+		if username == "" {
+			username = "git"
+		}
+		publicKeys, err := ssh.NewPublicKeys(username, []byte(platform.SSHKey), platform.SSHKeyPassphrase)
 		if err != nil {
 			return nil, fmt.Errorf("parse ssh key: %w", err)
 		}
@@ -129,4 +141,36 @@ func remoteName(platform *Platform) string {
 		return platform.RemoteName
 	}
 	return "push-plugin-" + platform.Name
+}
+
+func createRepositoryToPlatform(platform *Platform) error {
+	var createClient client.IClient
+	var err error
+	switch platform.PlatformType {
+	case PlatformGitee:
+		createClient = client.NewGiteeClient(platform.Token, platform.IsOrganization, platform.IsPrivate)
+	case PlatformBitbucket:
+		createClient, err = client.NewBitBucketClient(platform.Username, platform.Token, platform.IsOrganization, platform.IsPrivate)
+	case PlatformGitea:
+		createClient, err = client.NewGiteaClient(platform.Endpoint, platform.Token, platform.IsOrganization, platform.IsPrivate)
+	case PlatformGithub:
+		createClient = client.NewGithubClient(platform.Token, platform.IsOrganization, platform.IsPrivate)
+	default:
+		return fmt.Errorf("unknown platform type: %s", platform.PlatformType)
+	}
+	if err != nil {
+		return fmt.Errorf("create %s client failed: %w", platform.Name, err)
+	}
+	exist, err := createClient.IsRepositoryExist(platform.Owner, platform.Repository)
+	if err != nil {
+		return fmt.Errorf("check if %s repository exist failed: %w", platform.Name, err)
+	}
+	if exist {
+		return nil
+	}
+	err = createClient.CreateRepository(platform.Owner, platform.Repository)
+	if err != nil {
+		return fmt.Errorf("create %s repository failed: %w", platform.Name, err)
+	}
+	return nil
 }

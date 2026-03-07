@@ -8,18 +8,32 @@ import (
 	"github.com/tidwall/pretty"
 )
 
+const (
+	PlatformGitea     = "gitea"
+	PlatformGithub    = "github"
+	PlatformGitee     = "gitee"
+	PlatformBitbucket = "bitbucket"
+	PlatformCNB       = "cnb"
+)
+
 type Platform struct {
-	Name             string `json:"name"`               // platform name
-	Enabled          bool   `json:"enabled"`            // enable push to platform
-	Organization     string `json:"organization"`       // set organization if you want to create repository
-	Repository       string `json:"repository"`         // set repository name if you want to create repository
-	URL              string `json:"url"`                // git repository url
-	Username         string `json:"username"`           // platform username
-	Password         string `json:"password"`           // platform password
-	Token            string `json:"token"`              // platform token
-	SSHKey           string `json:"ssh_key"`            // git ssh key
-	SSHKeyPassphrase string `json:"ssh_key_passphrase"` // git ssh key passphrase
-	RemoteName       string `json:"remote_name"`        // custom remote name
+	Name                 string `json:"name"`               // platform name
+	Enabled              bool   `json:"enabled"`            // enable push to platform
+	Owner                string `json:"owner"`              // set repository owner if you want to create repository
+	Repository           string `json:"repository"`         // set repository name if you want to create repository
+	IsOrganization       bool   `json:"is_organization"`    // is organization if you want to create repository
+	URL                  string `json:"url"`                // git repository url
+	Username             string `json:"username"`           // platform username, some platform allow https push
+	Password             string `json:"password"`           // platform password, some platform allow https push
+	Token                string `json:"token"`              // platform token, make sure token have repository permission
+	SSHKey               string `json:"ssh_key"`            // git ssh key
+	SSHKeyPassphrase     string `json:"ssh_key_passphrase"` // git ssh key passphrase
+	SSHUser              string `json:"ssh_user"`           // ssh user, default is git
+	RemoteName           string `json:"remote_name"`        // custom remote name
+	AutoCreateRepository bool   `json:"auto_create"`        // auto create repository
+	IsPrivate            bool   `json:"is_private"`         // create repository with private
+	PlatformType         string `json:"platform_type"`      // git platform type, codeberg/codefloe/gitea use gitea
+	Endpoint             string `json:"endpoint"`           // git platform openapi endpoint
 }
 
 type Config struct {
