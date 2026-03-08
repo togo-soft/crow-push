@@ -155,6 +155,8 @@ func createRepositoryToPlatform(platform *Platform) error {
 		createClient, err = client.NewGiteaClient(platform.Endpoint, platform.Token, platform.IsOrganization, platform.IsPrivate)
 	case PlatformGithub:
 		createClient = client.NewGithubClient(platform.Token, platform.IsOrganization, platform.IsPrivate)
+	case PlatformCNB:
+		createClient, err = client.NewCNBClient(platform.Token, platform.IsOrganization, platform.IsPrivate)
 	default:
 		return fmt.Errorf("unknown platform type: %s", platform.PlatformType)
 	}
