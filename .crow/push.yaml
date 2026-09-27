@@ -83,7 +83,7 @@ clone:
 
 steps:
   push:
-    image: golang:1.26
+    image: golang:1.27
     environment:
       GOOS: linux
       GOARCH: amd64
