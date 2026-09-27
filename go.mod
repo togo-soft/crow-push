@@ -5,7 +5,7 @@ go 1.27.1
 require (
 	cnb.cool/cnb/sdk/go-cnb v1.28.8
 	code.gitea.io/sdk/gitea v0.25.1
-	codefloe.com/actions/common v0.0.0-20260227135546-c80c14727e49
+	codefloe.com/actions/common v0.0.1
 	gitee.com/sdk/golang-sdk-v5 v0.0.0-20251207150835-3e2dd24e687e
 	github.com/go-git/go-git/v5 v5.19.2
 	github.com/google/go-github/v84 v84.0.0
